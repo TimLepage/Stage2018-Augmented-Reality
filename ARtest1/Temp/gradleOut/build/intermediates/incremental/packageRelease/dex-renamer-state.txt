@@ -1,4 +1,4 @@
-#Wed May 16 14:34:48 BRT 2018
+#Thu May 17 11:04:14 BRT 2018
 base.0=C\:\\Users\\timle\\Desktop\\Stage2018\\ARtest1\\Temp\\gradleOut\\build\\intermediates\\transforms\\dex\\release\\folders\\1000\\1f\\main
 renamed.0=classes.dex
 file.0=C\:\\Users\\timle\\Desktop\\Stage2018\\ARtest1\\Temp\\gradleOut\\build\\intermediates\\transforms\\dex\\release\\folders\\1000\\1f\\main\\classes.dex

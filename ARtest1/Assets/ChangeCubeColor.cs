@@ -34,12 +34,5 @@ public class ChangeCubeColor : MonoBehaviour {
 
         float coeff = GameObject.Find("Slider").GetComponent<Slider>().value;
         gameObject.transform.localScale = new Vector3(0.2f + coeff, 0.2f + coeff, 0.2f + coeff);
-
-        if (GameObject.Find("Toggle").GetComponent<Toggle>().isOn)
-        {
-            float color = GameObject.Find("Slider2").GetComponent<Slider>().value;
-            gameObject.GetComponent<Renderer>().material.color = new Color(color, color, color, 1);
-        }
-        
     }
 }

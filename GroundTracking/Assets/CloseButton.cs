@@ -14,7 +14,8 @@ public class CloseButton : MonoBehaviour {
     public Text dist;
     public TextMesh dist3D;
     private float angle;
-
+    public GameObject pf;
+    
     // Use this for initialization
     void Start () {
 		
@@ -24,21 +25,19 @@ public class CloseButton : MonoBehaviour {
 	void Update () {
     }
     
+    //This function closes the drawing
     public void OnClick()
     {
-        GameObject f = GameObject.Instantiate(flag);
-        f.transform.position = new Vector3(0, 0.00784f, 0);
-        f.transform.localScale = new Vector3(0.001f, 0.008f, 0.001f);
-
-
-        coord_new = new Vector3(0, 0, 0);
+        //Gets the position of the first flag
+        coord_new = pf.GetComponent<SavePositions>().getPosList(1);
         coord_old = getVector3(pos.text);
         GameObject instanciated_ruler = GameObject.Instantiate(ruler);
         //Calculates the distance between the two last points and displays it in the field "dist" and "dist3D"
         d = (float)Math.Sqrt(Math.Pow(coord_new.x - coord_old.x, 2) + Math.Pow(coord_new.z - coord_old.z, 2)) * 100;
         dist.text = d.ToString("G4") + " cm";
         instanciated_ruler.GetComponentInChildren<TextMesh>().text = d.ToString("G4") + " cm";
-        pos.text = "0.0, 0.0, 0.0";
+        //pos.text = "0.0, 0.0, 0.0";
+        pos.text = coord_new.ToString("G4");
         //places the object "Ruler" in between the two last points
         instanciated_ruler.transform.position = new Vector3((coord_old.x + coord_new.x) / 2, (coord_old.y + coord_new.y) / 2, (coord_old.z + coord_new.z) / 2);
         instanciated_ruler.transform.localScale = new Vector3(d / 100, 0.0008f, 0.0008f);

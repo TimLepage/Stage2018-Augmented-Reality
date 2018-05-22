@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,5 +29,10 @@ public class SavePositions : MonoBehaviour {
             Debug.Log(posList.Count);
             Debug.Log(posList[i].ToString("G4"));
         }*/
+    }
+
+    public Vector3 getPosList(int i)
+    {
+        return posList[i];
     }
 }

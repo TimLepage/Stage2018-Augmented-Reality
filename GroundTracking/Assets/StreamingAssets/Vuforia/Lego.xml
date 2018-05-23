@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+    <Tracking>
+        <ImageTarget name="LegoBlanc.Front" size="100.000000 25.000000"/>
+        <ImageTarget name="LegoBlanc.Back" size="100.000000 25.000000"/>
+        <ImageTarget name="LegoBlanc.Top" size="100.000000 29.983250"/>
+        <ImageTarget name="LegoBlanc.Left" size="30.000000 25.058823"/>
+        <ImageTarget name="LegoBlanc.Bottom" size="100.000000 30.000000"/>
+        <ImageTarget name="LegoBlanc.Right" size="30.000000 25.058823"/>
+        <MultiTarget name="LegoBlanc">
+            <Part name="LegoBlanc.Left" translation="-50.0 0 0" rotation="AD: 0 1 0 -90"/>
+            <Part name="LegoBlanc.Right" translation="50.0 0 0" rotation="AD: 0 1 0 90"/>
+            <Part name="LegoBlanc.Front" translation="0 0 15.0" rotation="AD: 1 0 0 0"/>
+            <Part name="LegoBlanc.Back" translation="0 0 -15.0" rotation="AD: 0 1 0 180"/>
+            <Part name="LegoBlanc.Top" translation="0 12.5 0" rotation="AD: 1 0 0 -90"/>
+            <Part name="LegoBlanc.Bottom" translation="0 -12.5 0" rotation="AD: 1 0 0 90"/>
+        </MultiTarget>
+    </Tracking>
+</QCARConfig>

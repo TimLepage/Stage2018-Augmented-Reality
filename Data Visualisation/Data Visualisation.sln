@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Visualisation", "Assembly-CSharp.csproj", "{348E99BC-975E-DEEC-FC6F-58C1729320F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Visualisation", "Assembly-CSharp-firstpass.csproj", "{1FF06CFC-4987-7C70-ADC0-FAA94D37C123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Visualisation", "Assembly-CSharp-Editor-firstpass.csproj", "{0139E53A-68B1-DE0F-E981-BA8CC060AB07}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Visualisation", "Assembly-CSharp-Editor.csproj", "{77C8C841-BABC-748F-1D5C-C69CF71292EB}"
 EndProject
 Global
@@ -15,6 +19,14 @@ Global
 		{348E99BC-975E-DEEC-FC6F-58C1729320F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{348E99BC-975E-DEEC-FC6F-58C1729320F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{348E99BC-975E-DEEC-FC6F-58C1729320F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FF06CFC-4987-7C70-ADC0-FAA94D37C123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FF06CFC-4987-7C70-ADC0-FAA94D37C123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FF06CFC-4987-7C70-ADC0-FAA94D37C123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FF06CFC-4987-7C70-ADC0-FAA94D37C123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0139E53A-68B1-DE0F-E981-BA8CC060AB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0139E53A-68B1-DE0F-E981-BA8CC060AB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0139E53A-68B1-DE0F-E981-BA8CC060AB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0139E53A-68B1-DE0F-E981-BA8CC060AB07}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77C8C841-BABC-748F-1D5C-C69CF71292EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77C8C841-BABC-748F-1D5C-C69CF71292EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77C8C841-BABC-748F-1D5C-C69CF71292EB}.Release|Any CPU.ActiveCfg = Release|Any CPU

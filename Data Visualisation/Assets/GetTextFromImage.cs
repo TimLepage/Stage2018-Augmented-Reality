@@ -6,18 +6,26 @@ using System.Text;
 using UnityEngine;
 
 public class GetTextFromImage : MonoBehaviour {
-
-    private string ocrPostURL = "http://api.ocr.space/parse/image";//URL of OCR API post call
-    private string imageText = "";
-    private string imagePath = "";
-    private float[,] array;
-
-    // Use this for initialization
+// Use this for initialization
     void Start()
     {//when the parent prefab is instantiated it starts
 
         StartCoroutine(GetText());//launch coroutine with all the functionalities
     }
+    
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    private string ocrPostURL = "http://api.ocr.space/parse/image";//URL of OCR API post call
+    private string imageText = "";
+    private string imagePath = "";
+    private float[,] array;
+
+    public TextMesh textMesh;
+
+    
 
     IEnumerator GetText()
     {
@@ -25,10 +33,11 @@ public class GetTextFromImage : MonoBehaviour {
         string encodedImage = this.encodeImageBase64(imagePath);//encode the screenshot in Base64
         yield return StartCoroutine(getTextFromImage(encodedImage));
         this.array = parseTab(imageText);
+        textMesh.text = ArrayFloatToString(array);
     }
 
     /**
-     * Function to parse the xml into an array of float
+     * Function to parse the json into an array of float
      * 
      * */
     private float[,] parseTab(string _imageText)
@@ -55,9 +64,11 @@ public class GetTextFromImage : MonoBehaviour {
         {//look every word
 
             float n;
-            if (float.TryParse(word, out n)) //if this word is a number
-                numbers[i] = n; 
-            i++;
+            if (float.TryParse(word, out n))//if this word is a number
+            { 
+                numbers[i] = n;
+                i++;
+            }
         }
 
         float[,] res = new float[2, i];
@@ -74,16 +85,12 @@ public class GetTextFromImage : MonoBehaviour {
         return res;
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
 
     /**
-		 * 
-		 * Function to encode a PNG image in Base64 and return the result in a String
-		 * 
-		 **/
+	* 
+	* Function to encode a PNG image in Base64 and return the result in a String
+	* 
+	**/
     private string encodeImageBase64(String _imagePath)
     {
 
@@ -96,10 +103,10 @@ public class GetTextFromImage : MonoBehaviour {
     }
 
     /**
-		 * 
-		 * Function to load PNG image from path into a Texture2D object which is returned
-		 * 
-		 **/
+	* 
+	* Function to load PNG image from path into a Texture2D object which is returned
+    * 
+	**/
     private static Texture2D LoadPNG(string _imagePath)
     {
 
@@ -128,6 +135,10 @@ public class GetTextFromImage : MonoBehaviour {
         return texture;
     }
 
+
+    /**
+     * Function to call the OCR webservice and return the result
+     * */
     IEnumerator getTextFromImage(string _encodedImage)
     {
 
@@ -143,10 +154,10 @@ public class GetTextFromImage : MonoBehaviour {
     }
 
     /**
-		 * 
-		 * IEnumerator for wait call response
-		 * 
-		 **/
+	* 
+	* IEnumerator for wait call response
+	* 
+	**/
     IEnumerator WaitForRequest(WWW _www)
     {
         yield return _www;
@@ -158,5 +169,26 @@ public class GetTextFromImage : MonoBehaviour {
         {
             Debug.Log("WWW Error: " + _www.error);
         }
+    }
+
+    //Getter for the array
+    public float[,] GetArray()
+    {
+        return this.array;
+    }
+
+    private string ArrayFloatToString(float[,] array)
+    {
+        string res = "";
+        for(int j = 0; j < array.GetLength(1)/2; j++)
+        {
+            for(int i = 0; i < array.GetLength(0); i++)
+            {
+                res += array[i, j].ToString() + " ";
+            }
+            res += "\n";
+        }
+
+        return res;
     }
 }

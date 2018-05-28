@@ -336,11 +336,10 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 2
-    widthMultiplier: 10.91
+    widthMultiplier: 10
     widthCurve:
       serializedVersion: 2
       m_Curve:

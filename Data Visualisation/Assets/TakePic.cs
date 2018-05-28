@@ -213,7 +213,7 @@ public class TakePic : MonoBehaviour
         lr.positionCount = array.GetLength(1) / 2;
         for (int j = 0; j < array.GetLength(1) / 2; j++)
         {
-            lr.SetPosition(j, new Vector3(array[0,j]/100, array[1,j]/1000, 0f));
+            lr.SetPosition(j, new Vector3(array[0,j]/10, array[1,j]/10, 0f));
         }
     }
 }

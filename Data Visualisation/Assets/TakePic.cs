@@ -48,6 +48,7 @@ public class TakePic : MonoBehaviour
     IEnumerator GetText()
     {
         //this.imagePath = "C:\\Users\\timle\\Pictures\\test_image5.png";
+        yield return new WaitForSeconds(0.5f); //Waits for the image to be successfully stored
         this.imagePath = Application.persistentDataPath + "\\screen.png";
         string encodedImage = this.encodeImageBase64(imagePath);//encode the screenshot in Base64
         yield return StartCoroutine(getTextFromImage(encodedImage));

@@ -13,15 +13,20 @@ public class TakePic : MonoBehaviour
     private string imagePath = "";
     private float[,] array;
 
+    public GameObject axis;
     public LineRenderer lr;
     public TextMesh textMesh;
+    public TextMesh keyValues;
     public Button button;
     public int resWidth = 1280;
     public int resHeight = 720;
 
+
     public void Onclick()
     {
-        button.interactable = false;
+        axis.SetActive(true); //hides the previous graph
+        lr.positionCount = 0;
+        button.interactable = false; //prevents the user from spaming the button
         textMesh.text = "Loading...";
         RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
         GetComponent<Camera>().targetTexture = rt;
@@ -193,6 +198,10 @@ public class TakePic : MonoBehaviour
         return this.array;
     }
 
+    /**
+     * Function that transforms the float array to a string in order to display it
+     * 
+     * */
     private string ArrayFloatToString(float[,] array)
     {
         string res = "";
@@ -208,12 +217,44 @@ public class TakePic : MonoBehaviour
         return res;
     }
 
+    /**
+     * Function that generates the graphic associated to the array in parameter
+     * 
+     * */
     private void CreateGraphic(float[,] array)
     {
         lr.positionCount = array.GetLength(1) / 2;
         for (int j = 0; j < array.GetLength(1) / 2; j++)
         {
-            lr.SetPosition(j, new Vector3(array[0,j]/10, array[1,j]/10, 0f));
+            lr.SetPosition(j, new Vector3(array[0, j] / 10, array[1, j] / 10, 0f));
         }
+        KeyValues(array);
+        axis.SetActive(true);
+    }
+
+    /**
+     * Functions thats displays the key values of the array
+     * 
+     * */
+    private void KeyValues(float[,] array)
+    {
+        float min = float.MaxValue;
+        float max = 0;
+        float minAt = 0;
+        float maxAt = 0;
+        for (int j = 0; j < array.GetLength(1) / 2; j++)
+        {
+            if (array[1, j] < min)
+            {
+                min = array[1, j];
+                minAt = array[0, j];
+            }
+            if (array[1, j] > max)
+            {
+                max = array[1, j];
+                maxAt = array[0, j];
+            }
+        }
+        keyValues.text = "Min: " + min.ToString() + " at " + minAt.ToString() + "\nMax: " + max.ToString() + " at " + maxAt.ToString();
     }
 }

@@ -110,6 +110,12 @@ void drawObject(int x, int y, Mat &frame) {
 	else line(frame, Point(x, y), Point(FRAME_WIDTH, y), Scalar(0, 255, 0), 2);
 
 	putText(frame, intToString(x) + "," + intToString(y), Point(x, y + 30), 1, 1, Scalar(0, 255, 0), 2);
+	if (H_MIN > 33 && H_MAX < 111) {
+		putText(frame, "White", Point(x, y + 60), 1, 1, Scalar(255, 255, 255), 2);
+	}
+	if (H_MIN > 102 && H_MAX > 125) {
+		putText(frame, "Blue", Point(x, y + 60), 1, 1, Scalar(255, 0, 0), 2);
+	}
 
 }
 void morphOps(Mat &thresh) {

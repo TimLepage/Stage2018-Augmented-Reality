@@ -13,8 +13,8 @@ c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(7
   c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(73): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
 c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(74): warning C4474: 'sprintf' : too many arguments passed for format string
   c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(74): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(147): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(160): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(161): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(153): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(166): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(167): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   ConsoleApplication2.vcxproj -> C:\Users\timle\Desktop\Stage2018\ObjectTracking\x64\Debug\ObjectTracking.exe
   ConsoleApplication2.vcxproj -> C:\Users\timle\Desktop\Stage2018\ObjectTracking\x64\Debug\ObjectTracking.pdb (Full PDB)

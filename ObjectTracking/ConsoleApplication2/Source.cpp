@@ -156,11 +156,13 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 				//if the area is the same as the 3/2 of the image size, probably just a bad filter
 				//we only want the object with the largest area so we safe a reference area each
 				//iteration and compare it to the area in the next iteration.
-				if (area > MIN_OBJECT_AREA && area<MAX_OBJECT_AREA && area>refArea) {
+				if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA /*&& area>refArea*/) {
 					x = moment.m10 / area;
 					y = moment.m01 / area;
 					objectFound = true;
 					refArea = area;
+					//draw object location on screen
+					drawObject(x, y, cameraFeed);
 				}
 				else objectFound = false;
 
@@ -169,8 +171,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed) {
 			//let user know you found an object
 			if (objectFound == true) {
 				putText(cameraFeed, "Tracking Object", Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
-				//draw object location on screen
-				drawObject(x, y, cameraFeed);
+
 				std::vector<RotatedRect> minRect((int)contours.size());
 				for (int i = 0; i < contours.size(); i++)
 				{

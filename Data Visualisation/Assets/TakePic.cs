@@ -11,22 +11,32 @@ public class TakePic : MonoBehaviour
     private string ocrPostURL = "http://api.ocr.space/parse/image";//URL of OCR API post call
     private string imageText = "";
     private string imagePath = "";
-    private float[,] array;
+    private float[,] array2D;
+    private float[] array1D;
 
     public GameObject axis;
     public LineRenderer lr;
     public TextMesh textMesh;
     public TextMesh keyValues;
-    public Button button;
+    public Button Graph;
+    public Button Pie;
     public int resWidth = 1280;
     public int resHeight = 720;
 
 
-    public void Onclick()
+    public void OnclickGraph()
     {
-        axis.SetActive(true); //hides the previous graph
+        Screenshot();
+        StartCoroutine(GetTextGraph());//launch coroutine with all the functionalities
+    }
+
+
+    private void Screenshot()
+    {
+        axis.SetActive(false); //hides the previous graph
         lr.positionCount = 0;
-        button.interactable = false; //prevents the user from spaming the button
+        Graph.interactable = false; //prevents the user from spaming the button
+        Pie.interactable = false; //prevents the user from spaming the button
         textMesh.text = "Loading...";
         RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
         GetComponent<Camera>().targetTexture = rt;
@@ -41,28 +51,63 @@ public class TakePic : MonoBehaviour
         //System.IO.File.WriteAllBytes("C:\\Users\\timle\\Pictures\\screen.png", bytes);
         System.IO.File.WriteAllBytes(Application.persistentDataPath + "\\screen.png", bytes);
         Debug.Log(string.Format("Took screenshot to: {0}", Application.persistentDataPath + "\\screen.png"));
-
-        StartCoroutine(GetText());//launch coroutine with all the functionalities
     }
 
-    IEnumerator GetText()
+    IEnumerator GetTextGraph()
     {
         //this.imagePath = "C:\\Users\\timle\\Pictures\\test_image5.png";
         yield return new WaitForSeconds(0.5f); //Waits for the image to be successfully stored
         this.imagePath = Application.persistentDataPath + "\\screen.png";
         string encodedImage = this.encodeImageBase64(imagePath);//encode the screenshot in Base64
         yield return StartCoroutine(getTextFromImage(encodedImage));
-        this.array = parseTab(imageText);
-        textMesh.text = ArrayFloatToString(array);
-        CreateGraphic(array);
-        button.interactable = true;
+        this.array2D = parseTab2D(imageText);
+        textMesh.text = ArrayFloatToString(array2D);
+        CreateGraphic(array2D);
+        Graph.interactable = true;
+        Pie.interactable = true;
     }
+
+
+    private float[] parseTab1D(string _imageText)
+    {
+        byte[] bytes = Encoding.Default.GetBytes(_imageText);
+        string imageTextUTF8 = Encoding.UTF8.GetString(bytes);
+
+        int pos_ini = 0;
+        int pos_end = 0;
+
+        ArrayList wordList = new ArrayList();
+        float[] numbers = new float[100];
+
+        while (imageTextUTF8.IndexOf("WordText\":\"", pos_end) > -1)
+        { //store extracted words in a list
+
+            pos_ini = imageTextUTF8.IndexOf("WordText\":\"", pos_end) + "WordText\":\"".Length;
+            pos_end = imageTextUTF8.IndexOf("\",", pos_ini);
+
+            wordList.Add(imageTextUTF8.Substring(pos_ini, pos_end - pos_ini));
+        }
+        int i = 0;
+        foreach (string word in wordList)
+        {//look every word
+
+            float n;
+            if (float.TryParse(word, out n))//if this word is a number
+            {
+                numbers[i] = n;
+                i++;
+            }
+        }
+        return numbers;
+    }
+
+
 
     /**
      * Function to parse the json into an array of float
      * 
      * */
-    private float[,] parseTab(string _imageText)
+    private float[,] parseTab2D(string _imageText)
     {
         byte[] bytes = Encoding.Default.GetBytes(_imageText);
         string imageTextUTF8 = Encoding.UTF8.GetString(bytes);
@@ -194,9 +239,9 @@ public class TakePic : MonoBehaviour
     }
 
     //Getter for the array
-    public float[,] GetArray()
+    public float[,] GetArray2D()
     {
-        return this.array;
+        return this.array2D;
     }
 
     /**

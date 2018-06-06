@@ -1,32 +1,20 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (ConsoleApplication2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Source.cpp
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(45): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(80): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(80): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(81): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(81): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(82): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(82): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(83): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(83): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(84): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(84): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(85): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(85): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(103): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(103): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(104): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(104): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(105): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(105): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(106): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(106): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(107): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(107): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(108): warning C4474: 'sprintf' : too many arguments passed for format string
-  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(108): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(188): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(201): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(202): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(87): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(122): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(122): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(123): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(123): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(124): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(124): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(125): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(125): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(126): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(126): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(127): warning C4474: 'sprintf' : too many arguments passed for format string
+  c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(127): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(218): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(231): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\timle\desktop\stage2018\objecttracking\consoleapplication2\source.cpp(232): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   ConsoleApplication2.vcxproj -> C:\Users\timle\Desktop\Stage2018\ObjectTracking\x64\Debug\ObjectTracking.exe
   ConsoleApplication2.vcxproj -> C:\Users\timle\Desktop\Stage2018\ObjectTracking\x64\Debug\ObjectTracking.pdb (Full PDB)

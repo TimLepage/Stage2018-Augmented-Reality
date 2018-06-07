@@ -47,10 +47,10 @@ int S_MAX = 256;
 int V_MIN = 0;
 int V_MAX = 256;
 int H_MINW = 0; //WHITE
-int H_MAXW = 64;
+int H_MAXW = 256;
 int S_MINW = 0;
-int S_MAXW = 14;
-int V_MINW = 0;
+int S_MAXW = 35;
+int V_MINW = 214;
 int V_MAXW = 256;
 int H_MINB = 103;//BLUE
 int H_MAXB = 126;
@@ -172,7 +172,7 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx) {
 	else if (hmn > 13 && hmx < 26) {
 		putText(frame, "Yellow", Point(x, y + 60), 1, 1, Scalar(0, 255, 255), 2);
 	}
-	else if (hmn >= 0 && hmx < 65) {
+	else if (hmn == 0 && hmx == 256) {
 		putText(frame, "White", Point(x, y + 60), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {

@@ -50,7 +50,7 @@ int H_MINW = 0; //WHITE
 int H_MAXW = 256;
 int S_MINW = 0;
 int S_MAXW = 35;
-int V_MINW = 214;
+int V_MINW = 210;
 int V_MAXW = 256;
 int H_MINB = 103;//BLUE
 int H_MAXB = 126;
@@ -83,16 +83,14 @@ const int FRAME_HEIGHT = 480;
 //max number of objects to be detected in frame
 const int MAX_NUM_OBJECTS = 50;
 //minimum and maximum object area
-const int MIN_OBJECT_AREA = 20 * 20;
+const int MIN_OBJECT_AREA = 60 * 60;
 const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH / 1.5;
 //names that will appear at the top of each window
 const String windowName = "Original Image";
 const String windowName1 = "HSV Image";
 const String windowName2 = "Thresholded Image";
-const String windowName22 = "Thresholded Image2";
 const String windowName3 = "After Morphological Operations";
 const String trackbarWindowName = "Trackbars";
-const String trackbarWindowName2 = "Trackbars2";
 
 void on_trackbar(int, void*)
 {//This function gets called whenever a
@@ -105,12 +103,17 @@ void on_trackbar(int, void*)
 }
 
 String intToString(int number) {
-
-
 	std::stringstream ss;
 	ss << number;
 	return ss.str();
 }
+
+String doubleToString(double number) {
+	std::ostringstream strs;
+	strs << number;
+	return strs.str();
+}
+
 
 void createTrackbars() {
 	//create window for trackbars
@@ -138,7 +141,7 @@ void createTrackbars() {
 	createTrackbar("V_MAX", trackbarWindowName, &V_MAXW, V_MAX, on_trackbar);
 }
 
-void drawObject(int x, int y, Mat &frame, int hmn, int hmx) {
+void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 
 	//use some of the openCV drawing functions to draw crosshairs
 	//on your tracked image!
@@ -163,23 +166,23 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx) {
 
 	putText(frame, intToString(x) + "," + intToString(y), Point(x, y + 30), 1, 1, Scalar(0, 255, 0), 2);
 
+	//displays the color identified according to the hue valor
 	if (hmn > 4 && hmx < 15) {
-		putText(frame, "Orange", Point(x, y + 60), 1, 1, Scalar(0, 140, 255), 2);
+		putText(frame, "Orange " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 140, 255), 2);
 	}
 	else if (hmn >= 0 && hmx < 5) {
-		putText(frame, "Red", Point(x, y + 60), 1, 1, Scalar(0, 0, 255), 2);
+		putText(frame, "Red " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 0, 255), 2);
 	}
 	else if (hmn > 13 && hmx < 26) {
-		putText(frame, "Yellow", Point(x, y + 60), 1, 1, Scalar(0, 255, 255), 2);
+		putText(frame, "Yellow " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 255, 255), 2);
 	}
 	else if (hmn == 0 && hmx == 256) {
-		putText(frame, "White", Point(x, y + 60), 1, 1, Scalar(255, 255, 255), 2);
+		putText(frame, "White " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {
-		putText(frame, "Blue", Point(x, y + 60), 1, 1, Scalar(255, 0, 0), 2);
+		putText(frame, "Blue " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(255, 0, 0), 2);
 	}
-	
-	
+
 }
 
 void morphOps(Mat &thresh) {
@@ -225,15 +228,12 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 
 				//if the area is less than 20 px by 20px then it is probably just noise
 				//if the area is the same as the 3/2 of the image size, probably just a bad filter
-				//we only want the object with the largest area so we safe a reference area each
-				//iteration and compare it to the area in the next iteration.
-				if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA /*&& area>refArea*/) {
+				if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA) {
 					x = moment.m10 / area;
 					y = moment.m01 / area;
 					objectFound = true;
-					refArea = area;
 					//draw object location on screen
-					drawObject(x, y, cameraFeed, hmn, hmx);
+					drawObject(x, y, cameraFeed, hmn, hmx, area);
 				}
 				else objectFound = false;
 
@@ -281,7 +281,7 @@ int main(int argc, char* argv[])
 	Mat thresholdr;
 	Mat thresholdy;
 	Mat thresholdo;
-		//x and y values for the location of the object
+	//x and y values for the location of the object
 	int xw = 0, yw = 0;
 	int xb = 0, yb = 0;
 	int xr = 0, yr = 0;
@@ -333,7 +333,6 @@ int main(int argc, char* argv[])
 
 		//show frames 
 		imshow(windowName2, thresholdw);
-		//imshow(windowName22, thresholdb);
 		imshow(windowName, cameraFeed);
 		//imshow(windowName1, HSV);
 

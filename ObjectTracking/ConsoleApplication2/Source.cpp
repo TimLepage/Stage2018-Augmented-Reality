@@ -166,23 +166,22 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 
 	putText(frame, intToString(x) + "," + intToString(y), Point(x, y + 30), 1, 1, Scalar(0, 255, 0), 2);
 
-	//displays the color identified according to the hue valor
+	//displays the color identified according to the hue valor as well as the number of pixels of the detected object
 	if (hmn > 4 && hmx < 15) {
-		putText(frame, "Orange " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 140, 255), 2);
+		putText(frame, "Orange " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 140, 255), 2);
 	}
 	else if (hmn >= 0 && hmx < 5) {
-		putText(frame, "Red " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 0, 255), 2);
+		putText(frame, "Red " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 0, 255), 2);
 	}
 	else if (hmn > 13 && hmx < 26) {
-		putText(frame, "Yellow " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(0, 255, 255), 2);
+		putText(frame, "Yellow " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 255, 255), 2);
 	}
 	else if (hmn == 0 && hmx == 256) {
-		putText(frame, "White " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(255, 255, 255), 2);
+		putText(frame, "White " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {
-		putText(frame, "Blue " + doubleToString(area), Point(x, y + 60), 1, 1, Scalar(255, 0, 0), 2);
+		putText(frame, "Blue " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 0, 0), 2);
 	}
-
 }
 
 void morphOps(Mat &thresh) {
@@ -252,11 +251,11 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				{
 					Scalar color = Scalar(0, 0, 0);
 					// contour
-					//drawContours(cameraFeed, contours, i, color, 1, 8, std::vector<Vec4i>(), 0, Point());
+					drawContours(cameraFeed, contours, i, color, 1, 8, std::vector<Vec4i>(), 0, Point());
 					// rotated rectangle
 					Point2f rect_points[4]; minRect[i].points(rect_points);
-					for (int j = 0; j < 4; j++)
-						line(cameraFeed, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
+					/*for (int j = 0; j < 4; j++)
+						line(cameraFeed, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);*/
 				}
 			}
 

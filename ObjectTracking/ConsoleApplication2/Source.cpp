@@ -39,6 +39,8 @@ int S_MIN = 251*/
 int H_MAX = 25;
 int S_MIN = 105*/
 
+//is used to adjust the value for the white color because I use a bad camera and the value keeps fluctuating
+int MEANSIZE = 29000;
 
 int H_MIN = 0; //BASE
 int H_MAX = 256;
@@ -50,7 +52,7 @@ int H_MINW = 0; //WHITE
 int H_MAXW = 256;
 int S_MINW = 0;
 int S_MAXW = 35;
-int V_MINW = 210;
+int V_MINW = 0;
 int V_MAXW = 256;
 int H_MINB = 103;//BLUE
 int H_MAXB = 126;
@@ -83,7 +85,7 @@ const int FRAME_HEIGHT = 480;
 //max number of objects to be detected in frame
 const int MAX_NUM_OBJECTS = 50;
 //minimum and maximum object area
-const int MIN_OBJECT_AREA = 60 * 60;
+const int MIN_OBJECT_AREA = 100 * 100;
 const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH / 1.5;
 //names that will appear at the top of each window
 const String windowName = "Original Image";
@@ -177,6 +179,8 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 		putText(frame, "Yellow " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 255, 255), 2);
 	}
 	else if (hmn == 0 && hmx == 256) {
+		if (area > MEANSIZE)
+			V_MINW += 10;
 		putText(frame, "White " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {
@@ -225,7 +229,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				Moments moment = moments((cv::Mat)contours[index]);
 				double area = moment.m00;
 
-				//if the area is less than 20 px by 20px then it is probably just noise
+				//if the area is less than 60px by 60px then it is probably just noise
 				//if the area is the same as the 3/2 of the image size, probably just a bad filter
 				if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA) {
 					x = moment.m10 / area;
@@ -235,8 +239,6 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 					drawObject(x, y, cameraFeed, hmn, hmx, area);
 				}
 				else objectFound = false;
-
-
 			}
 			//let user know you found an object
 			if (objectFound == true) {

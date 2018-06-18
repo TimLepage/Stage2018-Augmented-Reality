@@ -40,7 +40,8 @@ int H_MAX = 25;
 int S_MIN = 105*/
 
 //is used to adjust the value for the white color because I use a bad camera and the value keeps fluctuating
-int MEANSIZE = 29000;
+int MEANSIZEW = 40000;
+int MEANSIZEWMin = 10000;
 
 int H_MIN = 0; //BASE
 int H_MAX = 256;
@@ -54,30 +55,35 @@ int S_MINW = 0;
 int S_MAXW = 35;
 int V_MINW = 0;
 int V_MAXW = 256;
+int areaW = 0;
 int H_MINB = 103;//BLUE
 int H_MAXB = 126;
 int S_MINB = 0;
 int S_MAXB = 256;
 int V_MINB = 0;
 int V_MAXB = 256;
+int areaB = 0;
 int H_MINR = 0;//RED
 int H_MAXR = 4;
 int S_MINR = 105;
 int S_MAXR = 256;
 int V_MINR = 0;
 int V_MAXR = 256;
+int areaR = 0;
 int H_MINY = 14;//YELLOW
 int H_MAXY = 25;
 int S_MINY = 132;
 int S_MAXY = 256;
 int V_MINY = 0;
 int V_MAXY = 256;
+int areaY = 0;
 int H_MINO = 5;//ORANGE
 int H_MAXO = 14;
 int S_MINO = 223;
 int S_MAXO = 256;
 int V_MINO = 0;
 int V_MAXO = 256;
+int areaO = 0;
 
 //default capture width and height
 const int FRAME_WIDTH = 640;
@@ -171,21 +177,28 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 	//displays the color identified according to the hue valor as well as the number of pixels of the detected object
 	if (hmn > 4 && hmx < 15) {
 		putText(frame, "Orange " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 140, 255), 2);
+		putText(frame, "Orange " + doubleToString(area), Point(500, 20), 1, 1, Scalar(0, 140, 255), 2);
 	}
 	else if (hmn >= 0 && hmx < 5) {
 		putText(frame, "Red " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 0, 255), 2);
+		putText(frame, "Red " + doubleToString(area), Point(500, 40), 1, 1, Scalar(0, 0, 255), 2);
 	}
 	else if (hmn > 13 && hmx < 26) {
 		putText(frame, "Yellow " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 255, 255), 2);
+		putText(frame, "Yellow " + doubleToString(area), Point(500, 60), 1, 1, Scalar(0, 255, 255), 2);
 	}
 	else if (hmn == 0 && hmx == 256) {
-		if (area > MEANSIZE)
+		if (area > MEANSIZEW)
 			V_MINW += 10;
+		else if (area < MEANSIZEWMin) {
+			V_MIN -= 10;
+		}
 		putText(frame, "White " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 255, 255), 2);
+		putText(frame, "White " + doubleToString(area), Point(500, 80), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {
 		putText(frame, "Blue " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 0, 0), 2);
-	}
+		putText(frame, "Blue " + doubleToString(area), Point(500, 100), 1, 1, Scalar(255, 0, 0), 2);	}
 }
 
 void morphOps(Mat &thresh) {
@@ -229,7 +242,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				Moments moment = moments((cv::Mat)contours[index]);
 				double area = moment.m00;
 
-				//if the area is less than 60px by 60px then it is probably just noise
+				//if the area is less than 100px by 100px then it is probably just noise
 				//if the area is the same as the 3/2 of the image size, probably just a bad filter
 				if (area > MIN_OBJECT_AREA && area < MAX_OBJECT_AREA) {
 					x = moment.m10 / area;
@@ -340,7 +353,7 @@ int main(int argc, char* argv[])
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
-		waitKey(30);
+		waitKey(1);
 	}
 
 

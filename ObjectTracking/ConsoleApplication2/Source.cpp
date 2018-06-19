@@ -43,6 +43,9 @@ int S_MIN = 105*/
 int MEANSIZEW = 40000;
 int MEANSIZEWMin = 10000;
 
+//the size in px of one unit of Lego
+float REFUNIT = 0;
+
 int H_MIN = 0; //BASE
 int H_MAX = 256;
 int S_MIN = 0;
@@ -149,6 +152,26 @@ void createTrackbars() {
 	createTrackbar("V_MAX", trackbarWindowName, &V_MAXW, V_MAX, on_trackbar);
 }
 
+void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect> vect, int ctsize) {
+	float key = 0;
+	float comp;
+	for (int i = 0; i < ctsize; i++)
+	{
+		Point2f rect_points[4]; vect[i].points(rect_points);
+		for (int j = 0; j < 4; j++) {
+			//Measures the distance between 2 points of the rectangle in order to keep the biggest one
+			comp = sqrt(pow(rect_points[j].x - rect_points[(j + 1) % 4].x, 2) + pow(rect_points[j].y - rect_points[(j + 1) % 4].y, 2));
+			if (comp > key) {
+				key = comp;
+			}
+		}
+	}
+	int legosize = (int)round(key / REFUNIT);
+	putText(frame, "Size " + intToString(legosize), Point(x, y + 75), 1, 1, color, 2);
+}
+
+
+
 void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 
 	//use some of the openCV drawing functions to draw crosshairs
@@ -188,17 +211,18 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 		putText(frame, "Yellow " + doubleToString(area), Point(500, 60), 1, 1, Scalar(0, 255, 255), 2);
 	}
 	else if (hmn == 0 && hmx == 256) {
-		if (area > MEANSIZEW)
+		/*if (area > MEANSIZEW)
 			V_MINW += 10;
 		else if (area < MEANSIZEWMin) {
 			V_MIN -= 10;
-		}
+		}*/
 		putText(frame, "White " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 255, 255), 2);
 		putText(frame, "White " + doubleToString(area), Point(500, 80), 1, 1, Scalar(255, 255, 255), 2);
 	}
 	else if (hmn > 102 && hmx > 125) {
 		putText(frame, "Blue " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 0, 0), 2);
-		putText(frame, "Blue " + doubleToString(area), Point(500, 100), 1, 1, Scalar(255, 0, 0), 2);	}
+		putText(frame, "Blue " + doubleToString(area), Point(500, 100), 1, 1, Scalar(255, 0, 0), 2);
+	}
 }
 
 void morphOps(Mat &thresh) {
@@ -220,6 +244,28 @@ void morphOps(Mat &thresh) {
 
 
 }
+
+void getReferenceSize(Mat &frame, int hmn, int hmx, std::vector<RotatedRect> vect, int ctsize) {
+	if (hmn > 13 && hmx < 26) {
+		float key = 0;
+		float comp;
+		for (int i = 0; i < ctsize; i++)
+		{
+			Point2f rect_points[4]; vect[i].points(rect_points);
+			for (int j = 0; j < 4; j++) {
+				//Measures the distance between 2 points of the rectangle in order to keep the biggest one
+				comp = sqrt(pow(rect_points[j].x - rect_points[(j + 1) % 4].x, 2) + pow(rect_points[j].y - rect_points[(j + 1) % 4].y, 2));
+				if (comp > key) {
+					key = comp;
+				}
+			}
+		}
+		REFUNIT = key / 4;
+		putText(frame, "1Unit: " + doubleToString(REFUNIT), Point(0, 430), 1, 1, Scalar(0, 0, 0), 2);
+	}
+
+}
+
 
 void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hmn, int &hmx) {
 
@@ -262,15 +308,18 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				{
 					minRect[i] = minAreaRect(Mat(contours[i]));
 				}
+				//Sets the size in px of one unit of lego
+				getReferenceSize(cameraFeed, hmn, hmx, minRect, contours.size());
+				displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size());
 				for (int i = 0; i < contours.size(); i++)
 				{
 					Scalar color = Scalar(0, 0, 0);
 					// contour
-					drawContours(cameraFeed, contours, i, color, 1, 8, std::vector<Vec4i>(), 0, Point());
+					//drawContours(cameraFeed, contours, i, color, 1, 8, std::vector<Vec4i>(), 0, Point());
 					// rotated rectangle
 					Point2f rect_points[4]; minRect[i].points(rect_points);
-					/*for (int j = 0; j < 4; j++)
-						line(cameraFeed, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);*/
+					for (int j = 0; j < 4; j++)
+						line(cameraFeed, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 				}
 			}
 

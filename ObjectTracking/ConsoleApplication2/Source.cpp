@@ -310,6 +310,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				}
 				//Sets the size in px of one unit of lego
 				getReferenceSize(cameraFeed, hmn, hmx, minRect, contours.size());
+				//displays the size in lego units of every object tracked
 				displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size());
 				for (int i = 0; i < contours.size(); i++)
 				{
@@ -324,7 +325,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 			}
 
 		}
-		else putText(cameraFeed, "TOO MUCH NOISE! ADJUST FILTER", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
+		else putText(cameraFeed, "Too much noise, please adjust filter", Point(0, 50), 1, 2, Scalar(0, 0, 255), 2);
 	}
 }
 
@@ -343,7 +344,7 @@ int main(int argc, char* argv[])
 	Mat thresholdb;
 	Mat thresholdr;
 	Mat thresholdy;
-	Mat thresholdo;
+	Mat thresholdo;	
 	//x and y values for the location of the object
 	int xw = 0, yw = 0;
 	int xb = 0, yb = 0;
@@ -402,7 +403,7 @@ int main(int argc, char* argv[])
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
-		waitKey(1);
+		waitKey(10);
 	}
 
 

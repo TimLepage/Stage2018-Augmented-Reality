@@ -12,13 +12,17 @@
   <!--Add buttons to initiate auth sequence and sign out-->
   <button id="authorize-button" style="display: none;">Authorize</button>
   <button id="signout-button" style="display: none;">Sign Out</button>
+  <div id="output"></div>
 
   <pre id="content"></pre>
 
+  <script src="info.js"></script>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
     var CLIENT_ID = '536265004123-aeda10s1d29o9d7uj09vvg2bjbicqib5.apps.googleusercontent.com';
     var API_KEY = 'AIzaSyDL5rDwwMlFq_FZ2GEqlkkaoXHcpRCJN-E';
+    var PATH = "    C:\\Users\\timle\\Desktop\\Stage2018\\LegoCalendar\\info.txt";
+
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
@@ -67,7 +71,7 @@
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
         listUpcomingEvents();
-        createEvent("Truc", "2", "3", "11");
+        readInfoTxt();
       } else {
         authorizeButton.style.display = 'block';
         signoutButton.style.display = 'none';
@@ -79,6 +83,17 @@
      */
     function handleAuthClick(event) {
       gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function readInfoTxt() {
+      var periode = str.split("-");
+      var day = 0;
+      for(var i = 0; i < periode.length-1; i++){
+        var elm = periode[i].split(" ");
+        createEvent("Truc"+i, hour.toString(), (day+parseInt(elm[0])).toString(), elm[1])
+        day += parseInt(elm[0]);
+      }
+      //createEvent("Truc", "2", "3", "11");
     }
 
     function stringToDate(s) {

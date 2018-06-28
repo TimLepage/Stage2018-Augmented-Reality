@@ -57,7 +57,7 @@ int V_MIN = 0;
 int V_MAX = 256;
 int H_MINW = 0; //WHITE
 int H_MAXW = 256;
-int S_MINW = 0;
+int S_MINW = 100;
 int S_MAXW = 0;
 int V_MINW = 0;
 int V_MAXW = 256;
@@ -92,7 +92,7 @@ int V_MAXO = 256;
 int areaO = 0;
 
 //path to file in which save the info
-String PATH = "C:\\Users\\timle\\Desktop\\Stage2018\\LegoCalendar\\info.txt";
+String PATH = "C:\\Users\\timle\\Desktop\\Stage2018\\LegoCalendar\\info.js";
 
 //default capture width and height
 const int FRAME_WIDTH = 640;
@@ -217,10 +217,12 @@ void infoToTxt() {
 	infList.sort(comp);
 	std::ofstream myfile;
 	myfile.open(PATH);
+	myfile << "var str = \"";
 	for (std::list<info>::iterator it = infList.begin(); it != infList.end(); ++it) {
 		info currentInf = *it;
-		myfile << intToString(currentInf.size) + ' ' + intToString(currentInf.color) + "\n";
+		myfile << intToString(currentInf.size) + ' ' + intToString(currentInf.color) + "-";
 	}
+	myfile << "\";";
 	myfile.close();
 }
 
@@ -228,12 +230,7 @@ void infoToTxt() {
 int drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 
 	//use some of the openCV drawing functions to draw crosshairs
-	//on your tracked image!
-
-	//UPDATE:JUNE 18TH, 2013
-	//added 'if' and 'else' statements to prevent
-	//memory errors from writing off the screen (ie. (-25,-25) is not within the window!)
-
+	//on your tracked image
 	circle(frame, Point(x, y), 20, Scalar(0, 255, 0), 2);
 	if (y - 25 > 0)
 		line(frame, Point(x, y), Point(x, y - 25), Scalar(0, 255, 0), 2);

@@ -14,11 +14,14 @@
 //IN THE SOFTWARE.
 
 #include <sstream>
+#include <list>
+#include <iterator>
 #include <string>
 #include <iostream>
 #include <C:\Users\timle\opencv\build\include\opencv\highgui.h>
 #include <C:\Users\timle\opencv\build\include\opencv\cv.hpp>
 #include <vector>
+#include <fstream>
 
 using namespace cv;
 //initial min and max HSV filter values.
@@ -55,7 +58,7 @@ int V_MAX = 256;
 int H_MINW = 0; //WHITE
 int H_MAXW = 256;
 int S_MINW = 0;
-int S_MAXW = 35;
+int S_MAXW = 0;
 int V_MINW = 0;
 int V_MAXW = 256;
 int areaW = 0;
@@ -88,6 +91,9 @@ int V_MINO = 0;
 int V_MAXO = 256;
 int areaO = 0;
 
+//path to file in which save the info
+String PATH = "C:\\Users\\timle\\Desktop\\Stage2018\\LegoCalendar\\info.txt";
+
 //default capture width and height
 const int FRAME_WIDTH = 640;
 const int FRAME_HEIGHT = 480;
@@ -102,6 +108,14 @@ const String windowName1 = "HSV Image";
 const String windowName2 = "Thresholded Image";
 const String windowName3 = "After Morphological Operations";
 const String trackbarWindowName = "Trackbars";
+
+typedef struct info {
+	int x;
+	int size;
+	int color;
+}info;
+
+std::list <info> infList;
 
 void on_trackbar(int, void*)
 {//This function gets called whenever a
@@ -152,7 +166,24 @@ void createTrackbars() {
 	createTrackbar("V_MAX", trackbarWindowName, &V_MAXW, V_MAX, on_trackbar);
 }
 
-void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect> vect, int ctsize) {
+//Saves the info in the list of info
+void saveInfo(int x, int size, int color) {
+	info inf;
+	inf.x = x;
+	inf.size = size;
+	inf.color = color;
+	for (std::list<info>::iterator it = infList.begin(); it != infList.end(); ++it) {
+		info currentInf = *it;
+		if (currentInf.color == inf.color) {
+			infList.erase(it);
+			break;
+		}
+	}
+	infList.push_back(inf);
+}
+
+//displays the size of eache block of lego detected
+void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect> vect, int ctsize, int colorId) {
 	float key = 0;
 	float comp;
 	for (int i = 0; i < ctsize; i++)
@@ -168,11 +199,33 @@ void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect
 	}
 	int legosize = (int)round(key / REFUNIT);
 	putText(frame, "Size " + intToString(legosize), Point(x, y + 75), 1, 1, color, 2);
+	saveInfo(x, legosize, colorId);
 }
 
 
+//Comparator for the sort function
+bool comp(info& first, info&second) {
+	if (first.x < second.x) {
+		return true;
+	}
+	return false;
+}
 
-void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
+//prints the infos in the txt in order to be read by the javascript program
+void infoToTxt() {
+	//Sorts the list in order to have the far right lego info printed first in the txt
+	infList.sort(comp);
+	std::ofstream myfile;
+	myfile.open(PATH);
+	for (std::list<info>::iterator it = infList.begin(); it != infList.end(); ++it) {
+		info currentInf = *it;
+		myfile << intToString(currentInf.size) + ' ' + intToString(currentInf.color) + "\n";
+	}
+	myfile.close();
+}
+
+
+int drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 
 	//use some of the openCV drawing functions to draw crosshairs
 	//on your tracked image!
@@ -201,14 +254,17 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 	if (hmn > 4 && hmx < 15) {
 		putText(frame, "Orange " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 140, 255), 2);
 		putText(frame, "Orange " + doubleToString(area), Point(500, 20), 1, 1, Scalar(0, 140, 255), 2);
+		return 6;
 	}
 	else if (hmn >= 0 && hmx < 5) {
 		putText(frame, "Red " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 0, 255), 2);
 		putText(frame, "Red " + doubleToString(area), Point(500, 40), 1, 1, Scalar(0, 0, 255), 2);
+		return 11;
 	}
 	else if (hmn > 13 && hmx < 26) {
 		putText(frame, "Yellow " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(0, 255, 255), 2);
 		putText(frame, "Yellow " + doubleToString(area), Point(500, 60), 1, 1, Scalar(0, 255, 255), 2);
+		return 5;
 	}
 	else if (hmn == 0 && hmx == 256) {
 		/*if (area > MEANSIZEW)
@@ -222,6 +278,7 @@ void drawObject(int x, int y, Mat &frame, int hmn, int hmx, double area) {
 	else if (hmn > 102 && hmx > 125) {
 		putText(frame, "Blue " + doubleToString(area) + "px", Point(x, y + 50), 1, 1, Scalar(255, 0, 0), 2);
 		putText(frame, "Blue " + doubleToString(area), Point(500, 100), 1, 1, Scalar(255, 0, 0), 2);
+		return 9;
 	}
 }
 
@@ -279,6 +336,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 	//use moments method to find our filtered object
 	double refArea = 0;
 	bool objectFound = false;
+	int colorId;
 	if (hierarchy.size() > 0) {
 		int numObjects = hierarchy.size();
 		//if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
@@ -295,7 +353,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 					y = moment.m01 / area;
 					objectFound = true;
 					//draw object location on screen
-					drawObject(x, y, cameraFeed, hmn, hmx, area);
+					colorId = drawObject(x, y, cameraFeed, hmn, hmx, area);
 				}
 				else objectFound = false;
 			}
@@ -311,7 +369,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				//Sets the size in px of one unit of lego
 				getReferenceSize(cameraFeed, hmn, hmx, minRect, contours.size());
 				//displays the size in lego units of every object tracked
-				displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size());
+				displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size(), colorId);
 				for (int i = 0; i < contours.size(); i++)
 				{
 					Scalar color = Scalar(0, 0, 0);
@@ -344,7 +402,7 @@ int main(int argc, char* argv[])
 	Mat thresholdb;
 	Mat thresholdr;
 	Mat thresholdy;
-	Mat thresholdo;	
+	Mat thresholdo;
 	//x and y values for the location of the object
 	int xw = 0, yw = 0;
 	int xb = 0, yb = 0;
@@ -403,13 +461,8 @@ int main(int argc, char* argv[])
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
+		infoToTxt();
 		waitKey(10);
 	}
-
-
-
-
-
-
 	return 0;
 }

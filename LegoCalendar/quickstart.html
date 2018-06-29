@@ -35,6 +35,12 @@
     var signoutButton = document.getElementById('signout-button');
 
     /**
+    * Reloads the page evrey 5 seconds to update the calendar
+    */
+    //setTimeout(function () { location.reload(1); }, 5000);
+
+    
+    /**
      *  On load, called to load the auth2 library and API client library.
      */
     function handleClientLoad() {
@@ -88,12 +94,31 @@
     function readInfoTxt() {
       var periode = str.split("-");
       var day = 0;
-      for(var i = 0; i < periode.length-1; i++){
-        var elm = periode[i].split(" ");
-        createEvent("Truc"+i, hour.toString(), (day+parseInt(elm[0])).toString(), elm[1])
-        day += parseInt(elm[0]);
-      }
-      //createEvent("Truc", "2", "3", "11");
+      var events;
+      gapi.client.calendar.events.list({
+        'calendarId': 'primary',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 10,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        var b;
+        for (var i = 0; i < periode.length - 1; i++) {
+          b = true;
+          var elm = periode[i].split(" ");
+          for(var j = 0; j < events.length; j++){
+              if(events[j].summary == "Event"+i){
+                b = false;
+              }
+          }
+          if(b){
+            createEvent("Event" + i, day.toString(), (day + parseInt(elm[0])).toString(), elm[1]);
+            day += parseInt(elm[0]);
+          }
+        }
+      });
     }
 
     function stringToDate(s) {

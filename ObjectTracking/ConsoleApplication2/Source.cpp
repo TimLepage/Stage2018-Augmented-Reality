@@ -182,7 +182,7 @@ void saveInfo(int x, int size, int color) {
 	infList.push_back(inf);
 }
 
-//displays the size of eache block of lego detected
+//displays the size of each block of lego detected
 void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect> vect, int ctsize, int colorId) {
 	float key = 0;
 	float comp;
@@ -320,6 +320,27 @@ void getReferenceSize(Mat &frame, int hmn, int hmx, std::vector<RotatedRect> vec
 
 }
 
+std::list <Rect> buttonList;
+bool dispInf = false;
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+	if (event == CV_EVENT_LBUTTONDOWN)
+	{
+		for (std::list<Rect>::iterator it = buttonList.begin(); it != buttonList.end(); ++it) {
+			Rect current = *it;
+			if (current.contains(Point(x, y))) { //if the click is in the clickable zone i.e the rotated rect (the lego piece)
+				if (!dispInf) {
+					dispInf = true;
+				}
+				else {
+					dispInf = false;
+				}
+
+			}
+		}
+	}
+}
+
 
 void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hmn, int &hmx) {
 
@@ -334,6 +355,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 	double refArea = 0;
 	bool objectFound = false;
 	int colorId;
+	double area;
 	if (hierarchy.size() > 0) {
 		int numObjects = hierarchy.size();
 		//if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
@@ -341,7 +363,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 			for (int index = 0; index >= 0; index = hierarchy[index][0]) {
 
 				Moments moment = moments((cv::Mat)contours[index]);
-				double area = moment.m00;
+				area = moment.m00;
 
 				//if the area is less than 100px by 100px then it is probably just noise
 				//if the area is the same as the 3/2 of the image size, probably just a bad filter
@@ -349,13 +371,13 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 					x = moment.m10 / area;
 					y = moment.m01 / area;
 					objectFound = true;
-					//draw object location on screen
-					colorId = drawObject(x, y, cameraFeed, hmn, hmx, area);
+					
 				}
 				else objectFound = false;
 			}
 			//let user know you found an object
 			if (objectFound == true) {
+				setMouseCallback(windowName, CallBackFunc, &cameraFeed);
 				putText(cameraFeed, "Tracking Object", Point(0, 50), 2, 1, Scalar(0, 255, 0), 2);
 
 				std::vector<RotatedRect> minRect((int)contours.size());
@@ -366,7 +388,10 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				//Sets the size in px of one unit of lego
 				getReferenceSize(cameraFeed, hmn, hmx, minRect, contours.size());
 				//displays the size in lego units of every object tracked
-				displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size(), colorId);
+				if (dispInf) {//draw object location on screen
+					colorId = drawObject(x, y, cameraFeed, hmn, hmx, area);
+					displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size(), colorId);
+				}
 				for (int i = 0; i < contours.size(); i++)
 				{
 					Scalar color = Scalar(0, 0, 0);
@@ -374,6 +399,9 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 					//drawContours(cameraFeed, contours, i, color, 1, 8, std::vector<Vec4i>(), 0, Point());
 					// rotated rectangle
 					Point2f rect_points[4]; minRect[i].points(rect_points);
+					//sets the clickable zone
+					Rect r = Rect(rect_points[0], rect_points[2]);
+					buttonList.push_back(r);
 					for (int j = 0; j < 4; j++)
 						line(cameraFeed, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
 				}
@@ -384,8 +412,10 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 	}
 }
 
+
 int main(int argc, char* argv[])
 {
+	namedWindow(windowName);
 	//some boolean variables for different functionality within this
 	//program
 	bool trackObjects = true;
@@ -418,6 +448,7 @@ int main(int argc, char* argv[])
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 	while (1) {
+		buttonList.clear();
 		//store image to matrix
 		capture.read(cameraFeed);
 		//convert frame from BGR to HSV colorspace
@@ -451,14 +482,16 @@ int main(int argc, char* argv[])
 		}
 
 		//show frames 
-		imshow(windowName2, thresholdw);
+		//imshow(windowName2, thresholdw);
 		imshow(windowName, cameraFeed);
 		//imshow(windowName1, HSV);
 
 
+		//writing the infos in the info.js file
+		infoToTxt();
+
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
-		infoToTxt();
 		waitKey(10);
 	}
 	return 0;

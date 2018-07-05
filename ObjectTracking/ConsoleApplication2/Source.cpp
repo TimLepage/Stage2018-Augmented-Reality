@@ -325,12 +325,13 @@ bool dispInf = false;
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
 	if (event == CV_EVENT_LBUTTONDOWN)
-	{
+	{	
 		for (std::list<Rect>::iterator it = buttonList.begin(); it != buttonList.end(); ++it) {
 			Rect current = *it;
 			if (current.contains(Point(x, y))) { //if the click is in the clickable zone i.e the rotated rect (the lego piece)
 				if (!dispInf) {
 					dispInf = true;
+					infList.clear();
 				}
 				else {
 					dispInf = false;

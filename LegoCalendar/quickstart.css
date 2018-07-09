@@ -175,6 +175,7 @@ button {
   font-size: 12px;
   padding: 0 30px;
   line-height: 50px;
+  text-align: center;
 }
 
 button:hover {

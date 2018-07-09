@@ -182,6 +182,13 @@ void saveInfo(int x, int size, int color) {
 	infList.push_back(inf);
 }
 
+//reads in the file containing the events to associate them with the Legos
+void displayInfo() {
+
+}
+
+
+
 //displays the size of each block of lego detected
 void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect> vect, int ctsize, int colorId) {
 	float key = 0;
@@ -300,7 +307,7 @@ void morphOps(Mat &thresh) {
 }
 
 void getReferenceSize(Mat &frame, int hmn, int hmx, std::vector<RotatedRect> vect, int ctsize) {
-	if (hmn > 13 && hmx < 26) {
+	if (hmn > 13 && hmx < 26) { //Here the yellow is used to calibrate
 		float key = 0;
 		float comp;
 		for (int i = 0; i < ctsize; i++)
@@ -314,7 +321,7 @@ void getReferenceSize(Mat &frame, int hmn, int hmx, std::vector<RotatedRect> vec
 				}
 			}
 		}
-		REFUNIT = key / 4;
+		REFUNIT = key / 4; //the size of the reference Lego is 4 units so we need to divide the measured size by 4 to have the size of one unit
 		putText(frame, "1Unit: " + doubleToString(REFUNIT), Point(0, 430), 1, 1, Scalar(0, 0, 0), 2);
 	}
 
@@ -330,8 +337,8 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 			Rect current = *it;
 			if (current.contains(Point(x, y))) { //if the click is in the clickable zone i.e the rotated rect (the lego piece)
 				if (!dispInf) {
-					dispInf = true;
-					infList.clear();
+					dispInf = true;	//displays the info
+					infList.clear(); 
 				}
 				else {
 					dispInf = false;
@@ -392,6 +399,7 @@ void trackFilteredObject(int &x, int &y, Mat threshold, Mat &cameraFeed, int &hm
 				if (dispInf) {//draw object location on screen
 					colorId = drawObject(x, y, cameraFeed, hmn, hmx, area);
 					displaySize(x, y, cameraFeed, Scalar(0, 0, 0), minRect, contours.size(), colorId);
+					displayInfo();
 				}
 				for (int i = 0; i < contours.size(); i++)
 				{

@@ -28,8 +28,11 @@
         Start Date :
         <input type="date" id="calendar" name="fdate">
         <input type="submit" class="button">
+        <img id="loadinggif" style="display: none;" align="right" src="https://www.lairedu.fr/player/img/loader.gif" height="50" width="50">
       </form>
+
     </div>
+
     <br><br>
   </div>
 
@@ -58,7 +61,7 @@
     var authorizeButton = document.getElementById('authorize-button');
     var signoutButton = document.getElementById('signout-button');
     var divall = document.getElementById('all');
-
+    var nbevents = 0;
     var eventlist = "";
     /**
      * Reloads the page evrey 3 seconds to update the calendar
@@ -120,7 +123,7 @@
     }
 
     function readInfoTxt() {
-      alert(str);
+      document.getElementById("loadinggif").style.display = 'block';
       var periode = str.split("-");
       var date = new Date(document.forms["formDate"]["fdate"].value);
       var today = new Date();
@@ -136,6 +139,7 @@
       });
       request.execute(function(response) {
         var events = response.result.items;
+        nbevents = periode.length - 1;
         var b;
         for (var i = 0; i < periode.length - 1; i++) {
           b = true;
@@ -198,6 +202,8 @@
       return today;
     }
 
+    var updateeventi = 0;
+
     function updateEvent(title, id, start, end, color) {
       var startToDate = stringToDate(start);
       var endToDate = stringToDate(end);
@@ -211,24 +217,38 @@
         },
         'colorId': color, //Blue:9 Red:11 Yellow:5 Orange:6
       };
-      gapi.client.load('calendar', 'v3', function() { // load the calendar api (version 3)
-        var request = gapi.client.calendar.events.update({
-          'calendarId': 'primary', // calendar ID
-          'eventId': id,
-          "resource": event // pass event details with api call
-        });
+      if (confirm("Do you really want to overwrite the event " + title + " on " + startToDate.toString())) {
+        document.getElementById("loadinggif").style.display = 'block';
+        gapi.client.load('calendar', 'v3', function() { // load the calendar api (version 3)
+          var request = gapi.client.calendar.events.update({
+            'calendarId': 'primary', // calendar ID
+            'eventId': id,
+            "resource": event // pass event details with api call
+          });
 
 
-        // handle the response from our api call
-        request.execute(function(resp) {
-          console.log(resp);
-          if (resp.code >= 500) {
-            updateEvent(title, id, start, end, color);
-          }
+          // handle the response from our api call
+          request.execute(function(resp) {
+            console.log(resp);
+            if (resp.code >= 500) {
+              updateEvent(title, id, start, end, color);
+            }
+            updateeventi++;
+            if (updateeventi == nbevents) { //if we went throught all the events we reload the page
+              updateeventi = 0;
+              this.location.reload();
+            }
+          });
         });
-      });
+      }
+      else{
+        document.getElementById("loadinggif").style.display = 'none';
+      }
       //appendPre("Event updated");
     }
+
+
+    var createeventi = 0;
 
     function createEvent(title, start, end, color) {
       var startToDate = stringToDate(start);
@@ -255,6 +275,11 @@
           console.log(resp);
           if (resp.code >= 500) {
             createEvent(title, start, end, color);
+          }
+          createeventi++;
+          if (createeventi == nbevents) { //if we went throught all the events we reload the page
+            createeventi = 0;
+            this.location.reload();
           }
         });
       });

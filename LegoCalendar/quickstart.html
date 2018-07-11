@@ -12,7 +12,13 @@
     <h1>Synchronise your calendar</h1>
     <div id="output"></div>
 
-    <h2 id="UpEve"></h2>
+    <h2 id="UpEve"></h2> Select the number of events to display
+    <form id="nbresForm" onsubmit="submitNbResForm(); return false;" name="formnbres" >
+      <input id="nbresults" type="number" style="font-size: 20px; height: 30px; margin-top: 0.5em;" name="fres" min="0">
+      <input type="submit" class="button">
+    </form><br>
+    <div id="NoresFound"></div>
+
     <pre id="content"></pre>
     <table id="UpEveTable">
       <tr>
@@ -120,6 +126,11 @@
      */
     function handleAuthClick(event) {
       gapi.auth2.getAuthInstance().signIn();
+    }
+
+
+    function submitNbResForm(){
+        listUpcomingEvents(document.forms["formnbres"]["fres"].value);
     }
 
     function readInfoTxt() {
@@ -240,8 +251,7 @@
             }
           });
         });
-      }
-      else{
+      } else {
         document.getElementById("loadinggif").style.display = 'none';
       }
       //appendPre("Event updated");
@@ -310,13 +320,20 @@
      * the authorized user's calendar. If no events are found an
      * appropriate message is printed.
      */
-    function listUpcomingEvents() {
+    function listUpcomingEvents(maxres = 10) {
+      var count = document.getElementById("UpEveTable").rows.length;
+      if(count > 1){
+        var table = document.getElementById('UpEveTable');
+        for(k = 1; k < count; k++){
+          table.deleteRow(1);
+        }
+      }
       var request = gapi.client.calendar.events.list({
         'calendarId': 'primary',
         'timeMin': (new Date()).toISOString(),
         'showDeleted': false,
         'singleEvents': true,
-        'maxResults': 10,
+        'maxResults': maxres,
         'orderBy': 'startTime'
       });
       request.execute(function(response) {
@@ -347,7 +364,7 @@
             list += event.summary + " " + whenstart + " " + whenend + "\n";
           }
         } else {
-          document.getElementById("UpEve").textContent = "No upcoming events found.";
+          document.getElementById("NoresFound").textContent = "No upcoming events found.";
         }
         this.eventlist = list;
       });

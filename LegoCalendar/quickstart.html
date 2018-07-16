@@ -13,7 +13,7 @@
     <div id="output"></div>
 
     <h2 id="UpEve"></h2> Select the number of events to display
-    <form id="nbresForm" onsubmit="submitNbResForm(); return false;" name="formnbres" >
+    <form id="nbresForm" onsubmit="submitNbResForm(); return false;" name="formnbres">
       <input id="nbresults" type="number" style="font-size: 20px; height: 30px; margin-top: 0.5em;" name="fres" min="0">
       <input type="submit" class="button">
     </form><br>
@@ -31,6 +31,11 @@
     <h2>Add the scanned events</h2>
     <div class="divForm">
       <form id="AddEvents" onsubmit="readInfoTxt(); return false;" name="formDate">
+        <h3>Corresponding Event:</h3>
+        <p><label for="orangeevent">Orange</label><input type="text" id="orangeevent"></p>
+        <p><label for="redevent">Red </label><input type="text" id="redevent"></p>
+        <p><label>Blue </label><input type="text" id="blueevent"></p>
+        <p><label>Yellow </label><input type="text" id="yellowevent"></p>
         Start Date :
         <input type="date" id="calendar" name="fdate">
         <input type="submit" class="button">
@@ -69,6 +74,13 @@
     var divall = document.getElementById('all');
     var nbevents = 0;
     var eventlist = "";
+
+    var dict = {
+      "Red": "",
+      "Orange": "",
+      "Blue": "",
+      "Yellow": ""
+    };
     /**
      * Reloads the page evrey 3 seconds to update the calendar
      */
@@ -112,6 +124,7 @@
         authorizeButton.style.display = 'none';
         signoutButton.style.display = 'block';
         all.style.display = 'block';
+        setDefaultForm();
         listUpcomingEvents();
         document.getElementById('calendar').valueAsDate = new Date();
       } else {
@@ -128,13 +141,62 @@
       gapi.auth2.getAuthInstance().signIn();
     }
 
-
-    function submitNbResForm(){
-        listUpcomingEvents(document.forms["formnbres"]["fres"].value);
+    /**
+    *   Displays the upcoming events according to the desired number given by the user
+    */
+    function submitNbResForm() {
+      listUpcomingEvents(document.forms["formnbres"]["fres"].value);
     }
 
+    /**
+    *   Sets th default values for the Event Form
+    */
+    function setDefaultForm() {
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf("orange=") == 0) {
+          document.getElementById("orangeevent").value = c.substring("orange=".length, c.length);// the default values are stocked in cookies and their value correspond to the last used value
+        }
+        if (c.indexOf("red=") == 0) {
+          document.getElementById("redevent").value = c.substring("red=".length, c.length);
+        }
+        if (c.indexOf("blue=") == 0) {
+          document.getElementById("blueevent").value = c.substring("blue=".length, c.length);
+        }
+        if (c.indexOf("yellow=") == 0) {
+          document.getElementById("yellowevent").value = c.substring("yellow=".length, c.length);
+        }
+      }
+    }
+
+
+    /**
+    *   Changes the values of the dictionnary with the values given by the user.
+    *   Creates the cookies in order to be used for the default values
+    */
+    function changeDictValues() {
+      dict["Orange"] = document.getElementById("orangeevent").value;
+      document.cookie = "orange=" + dict["Orange"];
+      dict["Red"] = document.getElementById("redevent").value;
+      document.cookie = "red=" + dict["Red"];
+      dict["Blue"] = document.getElementById("blueevent").value;
+      document.cookie = "blue=" + dict["Blue"];
+      dict["Yellow"] = document.getElementById("yellowevent").value;
+      document.cookie = "yellow=" + dict["Yellow"];
+    }
+
+
+    /**
+    *   Reads the info of the Lego line in the js file Info and does all the operations of synchronisation
+    */
     function readInfoTxt() {
       document.getElementById("loadinggif").style.display = 'block';
+      changeDictValues();
       var periode = str.split("-");
       var date = new Date(document.forms["formDate"]["fdate"].value);
       var today = new Date();
@@ -157,13 +219,13 @@
           var elm = periode[i].split(" ");
           var sum;
           if (elm[1] == '5') {
-            sum = "Yellow";
+            sum = dict["Yellow"];
           } else if (elm[1] == '6') {
-            sum = "Orange";
+            sum = dict["Orange"];
           } else if (elm[1] == '9') {
-            sum = "Blue";
+            sum = dict["Blue"];
           } else if (elm[1] == '11') {
-            sum = "Red";
+            sum = dict["Red"];
           }
 
           for (var j = 0; j < events.length; j++) {
@@ -182,6 +244,9 @@
 
     }
 
+    /**
+    *   Convert a string to a date
+    */
     function stringToDate(s) {
       var today = new Date();
       var dd = today.getDate();
@@ -214,7 +279,9 @@
     }
 
     var updateeventi = 0;
-
+    /**
+    *   Updates an existing event with the values given in parameter
+    */
     function updateEvent(title, id, start, end, color) {
       var startToDate = stringToDate(start);
       var endToDate = stringToDate(end);
@@ -259,7 +326,9 @@
 
 
     var createeventi = 0;
-
+    /**
+    *   Creates an event with values given in parameter and insert it in the calendar
+    */
     function createEvent(title, start, end, color) {
       var startToDate = stringToDate(start);
       var endToDate = stringToDate(end);
@@ -322,9 +391,9 @@
      */
     function listUpcomingEvents(maxres = 10) {
       var count = document.getElementById("UpEveTable").rows.length;
-      if(count > 1){
+      if (count > 1) {//Resets the table of upcoming events
         var table = document.getElementById('UpEveTable');
-        for(k = 1; k < count; k++){
+        for (k = 1; k < count; k++) {
           table.deleteRow(1);
         }
       }
@@ -343,7 +412,7 @@
 
         var table = document.getElementById('UpEveTable');
         if (events.length > 0) {
-          for (i = 0; i < events.length; i++) {
+          for (i = 0; i < events.length; i++) { // Fills the table of upcoming events
             var event = events[i];
             var whenstart = event.start.dateTime;
             if (!whenstart) {

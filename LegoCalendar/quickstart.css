@@ -31,6 +31,7 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
   padding: 20px;
 }
+
 p {
   display: table-row;
 }
@@ -41,6 +42,9 @@ label {
 
 input[type="text"] {
   display: table-cell;
+  height: 25px;
+  font-size: 18px;
+  margin-left: 15px;
 }
 
 #AddEvents {

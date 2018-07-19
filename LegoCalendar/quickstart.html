@@ -30,6 +30,9 @@
 
     <h2>Add the scanned events</h2>
     <div class="divForm">
+      <h3>Scanned events :</h3>
+      <div id="scannedEvents">
+      </div>
       <form id="AddEvents" onsubmit="readInfoTxt(); return false;" name="formDate">
         <h3>Corresponding Event:</h3>
         <p><label for="orangeevent">Orange</label><input type="text" id="orangeevent"></p>
@@ -125,6 +128,7 @@
         signoutButton.style.display = 'block';
         all.style.display = 'block';
         setDefaultForm();
+        loadScannedEvents();
         listUpcomingEvents();
         document.getElementById('calendar').valueAsDate = new Date();
       } else {
@@ -174,6 +178,24 @@
       }
     }
 
+
+    function loadScannedEvents(){
+      var periode = str.split("-");
+      for (var i = 0; i < periode.length - 1; i++) {
+        var elm = periode[i].split(" ");
+        var color;
+        if (elm[1] == '5') {
+          color = "Yellow";
+        } else if (elm[1] == '6') {
+          color = "Orange";
+        } else if (elm[1] == '9') {
+          color = "Blue";
+        } else if (elm[1] == '11') {
+          color = "Red";
+        }
+        document.getElementById('scannedEvents').innerHTML += color + " size : " + elm[0] + '<br>';
+      }
+    }
 
     /**
     *   Changes the values of the dictionnary with the values given by the user.

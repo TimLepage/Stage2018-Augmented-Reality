@@ -35,8 +35,8 @@
       </div>
       <form id="AddEvents" onsubmit="readInfoTxt(); return false;" name="formDate">
         <h3>Corresponding Event:</h3>
-        <p><label for="orangeevent">Orange</label><input type="text" id="orangeevent"></p>
-        <p><label for="redevent">Red </label><input type="text" id="redevent"></p>
+        <p><label>Orange</label><input type="text" id="orangeevent"></p>
+        <p><label>Red </label><input type="text" id="redevent"></p>
         <p><label>Blue </label><input type="text" id="blueevent"></p>
         <p><label>Yellow </label><input type="text" id="yellowevent"></p>
         Start Date :
@@ -251,7 +251,7 @@
           }
 
           for (var j = 0; j < events.length; j++) {
-            if (events[j].summary == sum) {
+            if (events[j].colorId.toString() == elm[1]) { //TODO faire qqch en fonction de la date des evenements rencontres plutot que par rapport a la couleur
               b = false; //if there is already an event we don't add another
               var id = events[j].id;
               updateEvent(sum, id, day.toString(), (day + parseInt(elm[0])).toString(), elm[1]);
@@ -304,7 +304,7 @@
     /**
     *   Updates an existing event with the values given in parameter
     */
-    function updateEvent(title, id, start, end, color) {
+    function updateEvent(title, id, start, end, color) {//TODO trigger le reload au bon moment si on update pas tous les evenements scannes
       var startToDate = stringToDate(start);
       var endToDate = stringToDate(end);
       var event = {
@@ -336,6 +336,7 @@
             updateeventi++;
             if (updateeventi == nbevents) { //if we went throught all the events we reload the page
               updateeventi = 0;
+              createeventi = 0;
               this.location.reload();
             }
           });
@@ -378,8 +379,10 @@
             createEvent(title, start, end, color);
           }
           createeventi++;
+          updateeventi++;
           if (createeventi == nbevents) { //if we went throught all the events we reload the page
             createeventi = 0;
+            updateeventi = 0;
             this.location.reload();
           }
         });

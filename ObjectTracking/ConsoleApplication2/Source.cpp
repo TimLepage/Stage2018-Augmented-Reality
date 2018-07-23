@@ -111,6 +111,7 @@ const String trackbarWindowName = "Trackbars";
 
 typedef struct info {
 	int x;
+	int y;
 	int size;
 	int color;
 }info;
@@ -167,9 +168,10 @@ void createTrackbars() {
 }
 
 //Saves the info in the list of info
-void saveInfo(int x, int size, int color) {
+void saveInfo(int x, int y, int size, int color) {
 	info inf;
 	inf.x = x;
+	inf.y = y;
 	inf.size = size;
 	inf.color = color;
 	for (std::list<info>::iterator it = infList.begin(); it != infList.end(); ++it) {
@@ -206,13 +208,13 @@ void displaySize(int x, int y, Mat &frame, Scalar color, std::vector<RotatedRect
 	}
 	int legosize = (int)round(key / REFUNIT);
 	putText(frame, "Size " + intToString(legosize), Point(x, y + 75), 1, 1, color, 2);
-	saveInfo(x, legosize, colorId);
+	saveInfo(x, y, legosize, colorId);
 }
 
 
 //Comparator for the sort function
 bool comp(info& first, info&second) {
-	if (first.x < second.x) {
+	if (first.x < second.x && first.y < second.y) {
 		return true;
 	}
 	return false;
